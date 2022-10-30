@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres9
+  labels:
+    name: postgres9
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: engine-postgres
+  namespace: postgres9
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: engine-postgres
+  template:
+    metadata:
+      labels:
+        name: engine-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:9.6
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POSTGRES_USER
+          value: kong
+        - name: POSTGRES_PASSWORD
+          value: "kong"
+        volumeMounts:
+        - name: postgres
+          mountPath: /var/lib/postgresql/data
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: postgres
+        hostPath:
+          path: /mnt/postgres9
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: engine-postgres
+  namespace: postgres9
+  labels:
+    name: engine-postgres
+spec:
+  type: NodePort
+  ports:
+    - nodePort: 30811
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    name: engine-postgres
+

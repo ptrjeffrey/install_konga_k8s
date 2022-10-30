@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kong
+  labels:
+    name: kong
+---
+#kong.yml文件
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong
+  template:
+    metadata:
+      labels:
+        app: kong
+    spec:
+      containers:
+      - name: kong
+        image: kong:latest
+        imagePullPolicy: IfNotPresent
+       
+        env:
+        - name: KONG_PG_USER
+          value: "kong"
+        - name: KONG_PG_PASSWORD
+          value: "kong"
+        - name: KONG_PG_HOST
+          value: "192.168.88.129"
+        - name: KONG_PG_DATABASE
+          value: "kong"       
+        - name: KONG_DATABASE
+          value: "postgres"
+        - name: KONG_PG_PORT
+          value: "30811"                        
+        - name: KONG_ADMIN_LISTEN       
+          value: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+ 
+ 
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+          name: kong-proxy
+        - containerPort: 8001
+          hostPort: 8001
+          protocol: TCP
+          name: kong-admin
+        - containerPort: 8443
+          protocol: TCP
+          name: kong-proxy-ssl
+        - containerPort: 8444
+          protocol: TCP
+          name: kong-admin-ssl
+        volumeMounts:
+        - name: kong-plugin
+          readOnly: false
+          mountPath: /usr/local/share/lua/5.1/kong/plugins/cas    
+        - name: kong-conf
+          readOnly: false
+          mountPath: /etc/kong
+   
+ 
+      volumes:
+        - name: kong-plugin
+          hostPath:
+            path: /mnt/kong/plugins
+            type: DirectoryOrCreate
+
+        - name: kong-conf
+          hostPath:
+            path: /mnt/kong/conf
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kong-svc
+  namespace: kong
+  labels:
+    app: kong-svc
+spec:
+  ports:
+  - name: kong-port
+    port: 8000
+    protocol: TCP
+    nodePort: 30629
+  - name: kong-admin-port
+    port: 8001
+    protocol: TCP
+    nodePort: 30026
+  selector:
+    app: kong
+  type: NodePort    

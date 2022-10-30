@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konga-migrate
+  namespace: postgres9
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: konga-migrate
+  template:
+    metadata:
+      labels:
+        name: konga-migrate
+    spec:
+      containers:
+        - name: postgres
+          image: pantsel/konga
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: KONG_DATABASE
+              value: postgres
+            - name: KONG_PG_PASSWORD
+              value: "kong"
+            - name: KONG_PG_HOST
+              value: "192.168.88.129"
+            - name: KONG_PG_DATABASE
+              value: "kong"
+            - name: KONG_PG_PORT
+              value: "30811"
+          command: ["prepare"]
+          args:
+            [
+              "-a",
+              "postgres",
+              "-u",
+              "postgresql://konga:konga@engine-postgres:5432/konga_db",
+            ]
