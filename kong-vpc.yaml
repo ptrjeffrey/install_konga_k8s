@@ -55,7 +55,14 @@ spec:
           value: "/dev/stderr"
         - name: KONG_ADMIN_ACCESS_LOG
           value: "/dev/stdout"
- 
+        - name: KONG_PLUGINS
+          value: "bundled,forward"
+        - name: KONG_PLUGINSERVER_NAMES
+          value: "forward"
+        - name: KONG_PLUGINSERVER_FORWARD_START_CMD
+          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward"
+        - name: KONG_PLUGINSERVER_FORWARD_QUERY_CMD
+          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward -dump"
  
         ports:
         - containerPort: 8000
@@ -74,7 +81,10 @@ spec:
         volumeMounts:
         - name: kong-plugin
           readOnly: false
-          mountPath: /usr/local/share/lua/5.1/kong/plugins/cas    
+          mountPath: /usr/local/share/lua/5.1/kong/plugins/cas
+        - name: kong-plugin-bin
+          readOnly: false
+          mountPath: /usr/local/share/lua/5.1/kong/plugins/bin
         - name: kong-conf
           readOnly: false
           mountPath: /etc/kong
@@ -82,14 +92,14 @@ spec:
  
       volumes:
         - name: kong-plugin
-          hostPath:
-            path: /mnt/kong/plugins
-            type: DirectoryOrCreate
-
+          persistentVolumeClaim:
+            claimName: sandbox-pvc3-2g
         - name: kong-conf
-          hostPath:
-            path: /mnt/kong/conf
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: sandbox-pvc4-2g
+        - name: kong-plugin-bin
+          persistentVolumeClaim:
+            claimName: sandbox-pvc5-2g
 ---
 apiVersion: v1
 kind: Service
@@ -103,11 +113,11 @@ spec:
   - name: kong-port
     port: 8000
     protocol: TCP
-    nodePort: 30729
+    nodePort: 30829
   - name: kong-admin-port
     port: 8001
     protocol: TCP
-    nodePort: 30726
+    nodePort: 30826
   selector:
     app: kong
   type: NodePort    

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: konga
-  namespace: kong
+  namespace: kong-gateway
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,13 @@ spec:
       - name: konga
         image: pantsel/konga:0.14.7
         imagePullPolicy: IfNotPresent
-       
+        resources:
+          limits:
+            memory: 2Gi
+            cpu: "2"
+          requests:
+            memory: 1Gi
+            cpu: "1"       
         env:
         - name: DB_ADAPTER
           value: "postgres"
@@ -44,7 +50,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: konga-svc
-  namespace: kong
+  namespace: kong-gateway
   labels:
     app: konga-svc
 spec:
@@ -52,7 +58,7 @@ spec:
   - name: konga-port
     port: 1337
     protocol: TCP
-    nodePort: 30904
+    nodePort: 30916
   selector:
     app: konga
   type: NodePort

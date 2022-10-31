@@ -23,10 +23,10 @@ spec:
         - name: KONG_PG_PASSWORD
           value: "kong"
         - name: KONG_PG_HOST
-          value: "192.168.88.129"
+          value: "engine-postgres.postgres9.svc.cluster.local"
         - name: KONG_PG_DATABASE
           value: "kong"
         - name: KONG_PG_PORT
-          value: "30811"
+          value: "5432"
         command: ["kong"]
         args: ["migrations", "bootstrap"]

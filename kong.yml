@@ -1,0 +1,20 @@
+ _format_version: "1.1"
+ _transform: true
+
+ services:
+ - host: 192.168.90.211
+   port: 30112
+   name: example_service
+   protocol: http
+   routes:
+   - name: example_route
+     paths:
+     - /
+     strip_path: true
+   plugins:
+     - name: forward
+       config:
+         edgeURL: "ws://192.168.0.136:8888/socket.io/?EIO=3&transport=websocket"
+         edgeRules: "authentication;users"
+        
+    

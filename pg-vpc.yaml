@@ -43,8 +43,8 @@ spec:
           mountPath: /etc/localtime
       volumes:
       - name: postgres
-        hostPath:
-          path: /mnt/postgres9
+        persistentVolumeClaim:
+          claimName: sandbox-pvc2-5g
       - name: localtime
         hostPath:
           path: /etc/localtime
@@ -59,7 +59,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - nodePort: 30811
+    - nodePort: 30911
       port: 5432
       targetPort: 5432
       protocol: TCP
