@@ -25,7 +25,7 @@ spec:
     storage: 5Gi
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/sandbx/pv2
+    path: /mnt/DT/pv2
     type: DirectoryOrCreate
 
 ---
@@ -58,7 +58,7 @@ spec:
     storage: 2Gi
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/sandbx/pv3
+    path: /mnt/DT/pv3
     type: DirectoryOrCreate
 
 ---
@@ -91,7 +91,7 @@ spec:
     storage: 2Gi
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/sandbx/pv4
+    path: /mnt/DT/pv4
     type: DirectoryOrCreate
 
 ---
@@ -124,7 +124,7 @@ spec:
     storage: 2Gi
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/sandbx/pv5
+    path: /mnt/DT/pv5
     type: DirectoryOrCreate
 
 ---
