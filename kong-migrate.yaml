@@ -17,6 +17,13 @@ spec:
       - name: postgres
         image: kong:latest
         imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 2Gi
+            cpu: "0.2"
+          requests:
+            memory: 1Gi
+            cpu: "0.1" 
         env:
         - name: KONG_DATABASE
           value: postgres
