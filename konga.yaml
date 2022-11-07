@@ -19,11 +19,11 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           limits:
-            memory: 2Gi
-            cpu: "2"
-          requests:
             memory: 1Gi
-            cpu: "1"       
+            cpu: "0.3"
+          requests:
+            memory: 500Mi
+            cpu: "0.2"       
         env:
         - name: DB_ADAPTER
           value: "postgres"

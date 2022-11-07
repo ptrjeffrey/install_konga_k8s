@@ -28,10 +28,10 @@ spec:
         resources:
           limits:
             memory: 2Gi
-            cpu: "2"
+            cpu: "0.8"
           requests:
             memory: 1Gi
-            cpu: "1"
+            cpu: "0.5"
         env:
         - name: KONG_PG_USER
           value: "kong"
