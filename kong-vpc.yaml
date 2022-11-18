@@ -27,10 +27,10 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           limits:
-            memory: 2Gi
+            memory: 4Gi
             cpu: "2"
           requests:
-            memory: 1Gi
+            memory: 2Gi
             cpu: "1"
         env:
         - name: KONG_PG_USER
