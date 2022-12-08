@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kong-gateway-dev
+  labels:
+    name: kong-gateway-dev
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres9-dev
+  labels:
+    name: postgres9-dev
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sandbox-pv2-5g
+  labels:
+    storage: sandbox-pv2-5g
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/sandbx/pv2
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sandbox-pvc2-5g
+  namespace: postgres9-dev
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  volumeName: sandbox-pv2-5g
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sandbox-pv3-2g
+  labels:
+    storage: sandbox-pv3-2g
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 2Gi
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/sandbx/pv3
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sandbox-pvc3-2g
+  namespace: kong-gateway-dev
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  volumeName: sandbox-pv3-2g
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sandbox-pv4-2g
+  labels:
+    storage: sandbox-pv4-2g
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 2Gi
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/sandbx/pv4
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sandbox-pvc4-2g
+  namespace: kong-gateway-dev
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  volumeName: sandbox-pv4-2g
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sandbox-pv5-2g
+  labels:
+    storage: sandbox-pv5-2g
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 2Gi
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/sandbx/pv5
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sandbox-pvc5-2g
+  namespace: kong-gateway-dev
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  volumeName: sandbox-pv5-2g
