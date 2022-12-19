@@ -56,13 +56,17 @@ spec:
         - name: KONG_ADMIN_ACCESS_LOG
           value: "/dev/stdout"
         - name: KONG_PLUGINS
-          value: "bundled,forward"
+          value: "bundled,forward,forward1"
         - name: KONG_PLUGINSERVER_NAMES
-          value: "forward"
+          value: "forward,forward1"
         - name: KONG_PLUGINSERVER_FORWARD_START_CMD
           value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward"
         - name: KONG_PLUGINSERVER_FORWARD_QUERY_CMD
           value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward -dump"
+        - name: KONG_PLUGINSERVER_FORWARD1_START_CMD
+          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward1"
+        - name: KONG_PLUGINSERVER_FORWARD1_QUERY_CMD
+          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward1 -dump"
  
         ports:
         - containerPort: 8000
