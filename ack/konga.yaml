@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: konga
-  namespace: kong-gateway
+  namespace: denengy
 spec:
   replicas: 1
   selector:
@@ -30,7 +30,7 @@ spec:
         - name: DB_DATABASE
           value: "konga_db"
         - name: DB_HOST
-          value: "engine-postgres.postgres9.svc.cluster.local"
+          value: "postgres96-service.denengy.svc.cluster.local"
         - name: DB_PASSWORD
           value: "konga"       
         - name: DB_PORT
@@ -50,7 +50,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: konga-svc
-  namespace: kong-gateway
+  namespace: denengy
   labels:
     app: konga-svc
 spec:

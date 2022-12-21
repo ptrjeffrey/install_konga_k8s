@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kong-migrate
-  namespace: postgres9
+  namespace: denengy
 spec:
   replicas: 1
   selector:
@@ -14,7 +14,7 @@ spec:
         name: kong-migrate
     spec:
       containers:
-      - name: postgres
+      - name: postgresmg
         image: kong:latest
         imagePullPolicy: IfNotPresent
         env:
@@ -23,7 +23,7 @@ spec:
         - name: KONG_PG_PASSWORD
           value: "kong"
         - name: KONG_PG_HOST
-          value: "engine-postgres.postgres9.svc.cluster.local"
+          value: "postgres96-service.denengy.svc.cluster.local"
         - name: KONG_PG_DATABASE
           value: "kong"
         - name: KONG_PG_PORT
