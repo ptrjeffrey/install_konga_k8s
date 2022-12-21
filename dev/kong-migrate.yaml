@@ -30,7 +30,7 @@ spec:
         - name: KONG_PG_PASSWORD
           value: "kong"
         - name: KONG_PG_HOST
-          value: "engine-postgres.postgres9-dev.svc.cluster.local"
+          value: "engine-postgres-svc.postgres9-dev.svc.cluster.local"
         - name: KONG_PG_DATABASE
           value: "kong"
         - name: KONG_PG_PORT
