@@ -1,9 +1,3 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kong-gateway
-  labels:
-    name: kong-gateway
 ---
 #kong.yml文件
 apiVersion: apps/v1
@@ -56,15 +50,15 @@ spec:
         - name: KONG_ADMIN_ACCESS_LOG
           value: "/dev/stdout"
         - name: KONG_PLUGINS
-          value: "bundled,forward,forward1"
+          value: bundled,forward
         - name: KONG_PLUGINSERVER_NAMES
-          value: "forward,forward1"
+          value: forward
         - name: KONG_PLUGINSERVER_FORWARD_START_CMD
-          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward"
-        - name: KONG_PLUGINSERVER_FORWARD1_START_CMD
-          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward1"
+          value: /usr/local/share/lua/5.1/kong/plugins/bin/forward
         - name: KONG_PLUGINSERVER_FORWARD_QUERY_CMD
-          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward -dump"
+          value: /usr/local/share/lua/5.1/kong/plugins/bin/forward -dump
+        - name: KONG_DECLARATIVE_CONFIG
+          value: /usr/local/share/lua/5.1/kong/plugins/cas/kong.yml
  
         ports:
         - containerPort: 8000
@@ -81,27 +75,22 @@ spec:
           protocol: TCP
           name: kong-admin-ssl
         volumeMounts:
-        - name: kong-plugin
-          readOnly: false
-          mountPath: /usr/local/share/lua/5.1/kong/plugins/cas
-        - name: kong-plugin-bin
-          readOnly: false
-          mountPath: /usr/local/share/lua/5.1/kong/plugins/bin
-        - name: kong-conf
-          readOnly: false
-          mountPath: /etc/kong
-   
- 
+        - mountPath: /usr/local/share/lua/5.1/kong/plugins/cas
+          name: kong-plugin
+        - mountPath: /usr/local/share/lua/5.1/kong/plugins/bin
+          name: kong-plugin-bin
+        - mountPath: /etc/kong
+          name: kong-conf 
       volumes:
-        - name: kong-plugin
-          persistentVolumeClaim:
-            claimName: kong-plugin
-        - name: kong-conf
-          persistentVolumeClaim:
-            claimName: kong-conf
-        - name: kong-plugin-bin
-          persistentVolumeClaim:
-            claimName: kong-plugin-bin
+      - name: kong-plugin
+        persistentVolumeClaim:
+          claimName: kong-plugin
+      - name: kong-conf
+        persistentVolumeClaim:
+          claimName: kong-conf
+      - name: kong-plugin-bin
+        persistentVolumeClaim:
+          claimName: kong-plugin-bin
 ---
 apiVersion: v1
 kind: Service

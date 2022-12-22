@@ -1,0 +1,28 @@
+ _format_version: "1.1"
+ _transform: true
+
+ services:
+ - host: dev-local
+   name: example_service
+   protocol: https
+   routes:
+   - name: example_route
+     paths:
+     - /
+     strip_path: true
+   plugins:
+     - name: forward
+       config:
+         edgeURL: "http://192.168.90.211:30113/"
+         edgeRules: "authentication;users;transform-classic-data"
+ upstreams:
+   - name: dev-local
+     targets:
+       - target: ds-api.cn.twinverse.com:443
+         weight: 100
+       - target: 192.168.90.211:30113
+         weight: 0
+         
+ 
+        
+    
