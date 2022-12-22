@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: postgresmg
-        image: kong:latest
+        image: registry.ds.digitwin.com.cn:5000/library/kong:2.8
         imagePullPolicy: IfNotPresent
         env:
         - name: KONG_DATABASE
@@ -28,5 +28,5 @@ spec:
           value: "kong"
         - name: KONG_PG_PORT
           value: "5432"
-        command: ["kong"]
-        args: ["migrations", "bootstrap"]
+        command: ["sleep"]
+        args: ["365d"]
