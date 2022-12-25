@@ -109,6 +109,10 @@ spec:
     port: 8001
     protocol: TCP
     nodePort: 30826
+  - name: kong-proxy-tls
+    port: 443
+    targetPort: 8443
+    protocol: TCP
   selector:
     app: kong
   type: NodePort    
