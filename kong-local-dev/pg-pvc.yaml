@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres9-dev
+  labels:
+    name: postgres9-dev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: engine-postgres
+  namespace: postgres9-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: engine-postgres
+  template:
+    metadata:
+      labels:
+        name: engine-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:9.6
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 4Gi
+            cpu: "2"
+          requests:
+            memory: 1Gi
+            cpu: "2"
+        env:
+        - name: POSTGRES_USER
+          value: "kong"
+        - name: POSTGRES_PASSWORD
+          value: "kong"
+        volumeMounts:
+        - name: postgres
+          mountPath: /var/lib/postgresql/data
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: postgres
+        persistentVolumeClaim:
+          claimName: sandbox-pv6-5g-dev
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: engine-postgres
+  namespace: postgres9-dev
+  labels:
+    name: engine-postgres
+spec:
+  type: NodePort
+  ports:
+    - nodePort: 31911
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    name: engine-postgres
+

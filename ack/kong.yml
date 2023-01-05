@@ -14,7 +14,7 @@
      - name: forward
        config:
          edgeURL: "http://denergy-dfactory-edge-api-dev.cn.twinverse.com/"
-         edgeRules: "authentication;users;transform-classic-data"
+         edgeRules: "authentication;users;transform-classic-data;apaas-.*;"
  upstreams:
    - name: dev-local
      targets:

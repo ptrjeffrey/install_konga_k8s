@@ -1,10 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kong-local-dev
+  labels:
+    name: kong-local-dev
 ---
 #kong.yml文件
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kong
-  namespace: denengy
+  namespace: kong-local-dev
 spec:
   replicas: 1
   selector:
@@ -17,22 +23,22 @@ spec:
     spec:
       containers:
       - name: kong
-        image: registry.ds.digitwin.com.cn:5000/library/kong:2.8
+        image: kong:2.8
         imagePullPolicy: IfNotPresent
         resources:
           limits:
-            memory: 4Gi
-            cpu: "2"
-          requests:
             memory: 2Gi
-            cpu: "1"
+            cpu: "0.8"
+          requests:
+            memory: 1Gi
+            cpu: "0.5"
         env:
         - name: KONG_PG_USER
           value: "kong"
         - name: KONG_PG_PASSWORD
           value: "kong"
         - name: KONG_PG_HOST
-          value: "postgres96-service.denengy.svc.cluster.local"
+          value: "engine-postgres.postgres9-dev.svc.cluster.local"
         - name: KONG_PG_DATABASE
           value: "kong"       
         - name: KONG_DATABASE
@@ -41,8 +47,6 @@ spec:
           value: "5432"                        
         - name: KONG_ADMIN_LISTEN       
           value: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
-        - name: KONG_PROXY_LISTEN       
-          value: "0.0.0.0:8000, 0.0.0.0:8443 ssl"
         - name: KONG_PROXY_ERROR_LOG
           value: "/dev/stderr"
         - name: KONG_PROXY_ACCESS_LOG
@@ -51,16 +55,14 @@ spec:
           value: "/dev/stderr"
         - name: KONG_ADMIN_ACCESS_LOG
           value: "/dev/stdout"
-        - name: KONG_PLUGINS
-          value: bundled,forward
-        - name: KONG_PLUGINSERVER_NAMES
-          value: forward
-        - name: KONG_PLUGINSERVER_FORWARD_START_CMD
-          value: /usr/local/share/lua/5.1/kong/plugins/bin/forward
-        - name: KONG_PLUGINSERVER_FORWARD_QUERY_CMD
-          value: /usr/local/share/lua/5.1/kong/plugins/bin/forward -dump
-        - name: KONG_DECLARATIVE_CONFIG
-          value: /usr/local/share/lua/5.1/kong/plugins/cas/kong.yml
+        # - name: KONG_PLUGINS
+        #   value: "bundled,forward"
+        # - name: KONG_PLUGINSERVER_NAMES
+        #   value: "forward"
+        # - name: KONG_PLUGINSERVER_FORWARD_START_CMD
+        #   value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward"
+        # - name: KONG_PLUGINSERVER_FORWARD_QUERY_CMD
+        #   value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward -dump"
  
         ports:
         - containerPort: 8000
@@ -76,29 +78,34 @@ spec:
         - containerPort: 8444
           protocol: TCP
           name: kong-admin-ssl
-        volumeMounts:
-        - mountPath: /usr/local/share/lua/5.1/kong/plugins/cas
-          name: kong-plugin
-        - mountPath: /usr/local/share/lua/5.1/kong/plugins/bin
-          name: kong-plugin-bin
-        - mountPath: /etc/kong
-          name: kong-conf 
-      volumes:
-      - name: kong-plugin
-        persistentVolumeClaim:
-          claimName: kong-plugin
-      - name: kong-conf
-        persistentVolumeClaim:
-          claimName: kong-conf
-      - name: kong-plugin-bin
-        persistentVolumeClaim:
-          claimName: kong-plugin-bin
+        # volumeMounts:
+        # - name: kong-plugin
+        #   readOnly: false
+        #   mountPath: /usr/local/share/lua/5.1/kong/plugins/cas
+        # - name: kong-plugin-bin
+        #   readOnly: false
+        #   mountPath: /usr/local/share/lua/5.1/kong/plugins/bin
+        # - name: kong-conf
+        #   readOnly: false
+        #   mountPath: /etc/kong
+   
+ 
+      # volumes:
+      #   - name: kong-plugin
+      #     persistentVolumeClaim:
+      #       claimName: sandbox-pvc3-2g-dev
+      #   - name: kong-conf
+      #     persistentVolumeClaim:
+      #       claimName: sandbox-pvc4-2g-dev
+      #   - name: kong-plugin-bin
+      #     persistentVolumeClaim:
+      #       claimName: sandbox-pvc5-2g-dev
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: kong-svc
-  namespace: denengy
+  namespace: kong-local-dev
   labels:
     app: kong-svc
 spec:
@@ -106,11 +113,11 @@ spec:
   - name: kong-port
     port: 8000
     protocol: TCP
-    nodePort: 30829
+    nodePort: 31829
   - name: kong-admin-port
     port: 8001
     protocol: TCP
-    nodePort: 30826
+    nodePort: 31826
   selector:
     app: kong
-  type: NodePort    
+  type: NodePort
