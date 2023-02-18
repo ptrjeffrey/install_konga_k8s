@@ -1,0 +1,88 @@
+---
+#kong.yml文件
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong-4
+  namespace: admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong-4
+  template:
+    metadata:
+      labels:
+        app: kong-4
+    spec:
+      containers:
+      - name: kong
+        image: registry.ds.digitwin.com.cn:5000/library/kong-forward:20221221
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KONG_PG_USER
+          value: "kong"
+        - name: KONG_PG_PASSWORD
+          value: "kong"
+        - name: KONG_PG_HOST
+          value: "postgres96-service.postgresqls.svc.cluster.local"
+        - name: KONG_PG_DATABASE
+          value: "kong_db_4"       
+        - name: KONG_DATABASE
+          value: "postgres"
+        - name: KONG_PG_PORT
+          value: "5432"                        
+        - name: KONG_ADMIN_LISTEN       
+          value: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_PLUGINS
+          value: "bundled,forward"
+        - name: KONG_PLUGINSERVER_NAMES
+          value: "forward"
+        - name: KONG_PLUGINSERVER_FORWARD_START_CMD
+          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward"
+        - name: KONG_PLUGINSERVER_FORWARD_QUERY_CMD
+          value: "/usr/local/share/lua/5.1/kong/plugins/bin/forward -dump"
+ 
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+          name: kong-proxy
+        - containerPort: 8001
+          protocol: TCP
+          name: kong-admin
+        - containerPort: 8443
+          protocol: TCP
+          name: kong-proxy-ssl
+        - containerPort: 8444
+          protocol: TCP
+          name: kong-admin-ssl
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kong-svc-4
+  namespace: admin
+  labels:
+    app: kong-svc-4
+spec:
+  ports:
+  - name: kong-port
+    port: 8000
+    protocol: TCP
+    nodePort: 30849
+  - name: kong-admin-port
+    port: 8001
+    protocol: TCP
+    nodePort: 30846
+  selector:
+    app: kong-4
+  type: NodePort    

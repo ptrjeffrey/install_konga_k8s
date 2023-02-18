@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong-migrate
+  namespace: admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kong-migrate
+  template:
+    metadata:
+      labels:
+        name: kong-migrate
+    spec:
+      containers:
+      - name: postgresmg
+        image: registry.ds.digitwin.com.cn:5000/library/kong:2.8
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KONG_DATABASE
+          value: postgres
+        - name: KONG_PG_DATABASE
+          value: "kong_db_1"
+        - name: KONG_PG_PASSWORD
+          value: "kong"
+        - name: KONG_PG_HOST
+          value: "postgres96-service.postgresqls.svc.cluster.local"
+        - name: KONG_PG_PORT
+          value: "5432"
+        command: ["sleep"]
+        args: ["365d"]
