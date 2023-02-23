@@ -31,12 +31,12 @@ spec:
           value: "konga_db"
         - name: DB_HOST
           value: "engine-postgres.postgres9.svc.cluster.local"
+        - name: DB_USER
+          value: "konga"
         - name: DB_PASSWORD
           value: "konga"       
         - name: DB_PORT
-          value: "5432"
-        - name: DB_USER
-          value: "konga"                        
+          value: "5432"                             
         - name: KONGA_LOG_LEVEL
           value: "debug"
         - name: NODE_ENV
